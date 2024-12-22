@@ -32,6 +32,17 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
 }
 
+/* Remove default outline for buttons and links */
+button, a {
+    outline: none; /* Remove the default outline */
+}
+
+/* Optional: Add a custom focus style for accessibility */
+button:focus, a:focus {
+    outline: 2px solid var(--primary-color); /* Custom focus outline */
+    outline-offset: 2px; /* Space between the outline and the element */
+}
+
 /* Glass Morphism */
 .glass {
     background: var(--glass-bg);
