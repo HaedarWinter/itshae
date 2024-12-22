@@ -285,6 +285,12 @@ document.getElementById('contactForm').addEventListener('submit', async function
             'template_xrrt72a', 
             templateParams
         );
+        // Kirim auto-reply ke pengirim
+        await emailjs.send(
+            'service_opuy3c6', 
+            'template_moc834p', 
+            templateParams
+        );
         
         // Success handling
         successMessage.textContent = 'Pesan berhasil terkirim! Terima kasih telah menghubungi saya.';
