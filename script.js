@@ -244,9 +244,92 @@ document.querySelectorAll('.fade-in, .progress').forEach(element => {
 });
 
 
-// Add these styles to your CSS
-const styles = document.createElement('style');
-styles.textContent = `
+// EmailJS Configuration
+document.addEventListener('DOMContentLoaded', function() {
+    emailjs.init("oNoHlclEaJgq6BQ8l");
+});
+
+// Form Submission Handler
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submit-btn');
+    const successMessage = document.getElementById('success-message');
+    const errorMessage = document.getElementById('error-message');
+    
+    // Validate form
+    if (!validateForm()) {
+        return;
+    }
+    
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+    submitBtn.innerHTML = '<span class="loading-spinner"></span>Sending...';
+    
+    // Hide any existing messages
+    successMessage.style.display = 'none';
+    errorMessage.style.display = 'none';
+
+    const templateParams = {
+        from_name: document.getElementById('name').value.trim(),
+        from_email: document.getElementById('email').value.trim(),
+        subject: document.getElementById('subject').value.trim(),
+        message: document.getElementById('message').value.trim()
+    };
+
+    try {
+        // Kirim email ke pemilik website
+        await emailjs.send(
+            'service_opuy3c6', 
+            'template_xrrt72a', 
+            templateParams
+        );
+        
+        // Success handling
+        successMessage.textContent = 'Pesan berhasil terkirim! Terima kasih telah menghubungi saya.';
+        successMessage.style.display = 'block';
+        document.getElementById('contactForm').reset();
+        
+    } catch (error) {
+        console.error('EmailJS Error:', error);
+        errorMessage.textContent = 'Gagal mengirim pesan. Silakan coba lagi nanti.';
+        errorMessage.style.display = 'block';
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+        submitBtn.innerHTML = 'Send Message';
+    }
+});
+
+// Validation Function
+function validateForm() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const errorMessage = document.getElementById('error-message');
+    
+    if (!name || !email || !subject || !message) {
+        errorMessage.textContent = 'Semua field harus diisi';
+        errorMessage.style.display = 'block';
+        return false;
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        errorMessage.textContent = 'Format email tidak valid';
+        errorMessage.style.display = 'block';
+        return false;
+    }
+    
+    return true;
+}
+
+// Styles for alerts and loading
+const emailStyles = document.createElement('style');
+emailStyles.textContent = `
     .alert {
         padding: 15px;
         margin: 15px 0;
@@ -286,112 +369,4 @@ styles.textContent = `
         to { transform: rotate(360deg); }
     }
 `;
-document.head.appendChild(styles);
-
-// Pastikan EmailJS sudah diinisialisasi
-document.addEventListener('DOMContentLoaded', function() {
-    // Inisialisasi EmailJS dengan public key Anda
-    emailjs.init("service_opuy3c6"); // Ganti dengan public key Anda
-});
-
-// Form submission handler
-document.getElementById('contactForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    // Elements
-    const form = this;
-    const submitBtn = document.getElementById('submit-btn');
-    const successMessage = document.getElementById('success-message');
-    const errorMessage = document.getElementById('error-message');
-    
-    // Validate form
-    if (!validateForm()) {
-        showError('Please fill in all required fields correctly.');
-        return;
-    }
-    
-    // Set loading state
-    setLoadingState(true);
-    hideMessages();
-    
-    // Prepare email parameters
-    const templateParams = {
-        from_name: document.getElementById('name').value.trim(),
-        from_email: document.getElementById('email').value.trim(),
-        subject: document.getElementById('subject').value.trim(),
-        message: document.getElementById('message').value.trim()
-    };
-    
-    try {
-        // Kirim email ke pemilik website
-        await emailjs.send(
-            'service_opuy3c6', 
-            'template_xrrt72a', 
-            templateParams
-        );
-        
-        // Kirim auto-reply ke pengirim
-        await emailjs.send(
-            'service_opuy3c6', 
-            'template_moc834p', 
-            templateParams
-        );
-        
-        // Success handling
-        showSuccess('Pesan berhasil terkirim! Terima kasih telah menghubungi saya.');
-        form.reset();
-        
-    } catch (error) {
-        console.error('EmailJS Error:', error);
-        showError('Gagal mengirim pesan. Silakan coba lagi nanti.');
-    } finally {
-        setLoadingState(false);
-    }
-});
-
-// Helper Functions
-function validateForm() {
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const subject = document.getElementById('subject').value.trim();
-    const message = document.getElementById('message').value.trim();
-    
-    // Basic validation
-    if (!name || !email || !subject || !message) {
-        return false;
-    }
-    
-    // Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        return false;
-    }
-    
-    return true;
-}
-
-function setLoadingState(isLoading) {
-    const submitBtn = document.getElementById('submit-btn');
-    submitBtn.disabled = isLoading;
-    submitBtn.classList.toggle('loading', isLoading);
-    submitBtn.innerHTML = isLoading ? 
-        '<span class="loading-spinner"></span>Sending...' : 
-        'Send Message';
-}
-
-function showSuccess(message) {
-    const successMessage = document.getElementById('success-message');
-    successMessage.textContent = message;
-    successMessage.style.display = 'block';
-}
-
-function showError(message) {
-    const errorMessage = document.getElementById('error-message');
-    errorMessage.textContent = message;
-    errorMessage.style.display = 'block';
-}
-
-function hideMessages() {
-    document.getElementById('success-message').style.display = 'none';
-    document.getElementById('error-message').style.display = 'none';
-}
+document.head.appendChild(emailStyles);
