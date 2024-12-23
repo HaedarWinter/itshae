@@ -493,18 +493,227 @@
     </select>
 </div>
 
-<!-- Loading Screen -->
-<div class="loading-screen" id="loading-screen">
-    <div class="loader">
+<style>
+    /* Style buat animasi loading pertama kali */
+    .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        display: none; /* Awalnya sembunyi dulu */
+        opacity: 0; /* Biar bisa di-fade in */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* Pastiin tampil paling depan */
+        transition: opacity 0.5s ease-out;
+    }
+
+    /* Kotak loading yang muter-muter */
+    .loader {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        perspective: 800px;
+    }
+
+    /* Si kubus yang muter */
+    .cube {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        animation: rotate 2s infinite linear;
+    }
+
+    /* Sisi-sisi kubus */
+    .side {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(45deg, #6366f1, #8b5cf6);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+
+    /* Posisi tiap sisi kubus */
+    .front  { transform: translateZ(50px); }
+    .back   { transform: translateZ(-50px) rotateY(180deg); }
+    .right  { transform: rotateY(-270deg) translateX(50px); transform-origin: top right; }
+    .left   { transform: rotateY(270deg) translateX(-50px); transform-origin: center left; }
+    .top    { transform: rotateX(-270deg) translateY(-50px); transform-origin: top center; }
+    .bottom { transform: rotateX(270deg) translateY(50px); transform-origin: bottom center; }
+
+    /* Animasi muter */
+    @keyframes rotate {
+        0% { transform: rotateX(0deg) rotateY(0deg); }
+        100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    /* Text loading yang ada titik-titiknya */
+    .loading-text {
+        margin-top: 2rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #6366f1;
+        font-size: 1.2rem;
+        position: relative;
+    }
+
+    .loading-text::after {
+        content: '';
+        animation: dots 1.5s infinite;
+    }
+
+    /* Animasi titik-titik */
+    @keyframes dots {
+        0%, 20% { content: '.'; }
+        40% { content: '..'; }
+        60% { content: '...'; }
+        80%, 100% { content: ''; }
+    }
+
+    /* Progress bar biar keliatan ada prosesnya */
+    .progress-bar {
+        width: 200px;
+        height: 3px;
+        background: #e5e7eb;
+        border-radius: 3px;
+        margin-top: 1rem;
+        overflow: hidden;
+    }
+
+    .progress {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(to right, #6366f1, #8b5cf6);
+        animation: progress 2s ease-in-out infinite;
+    }
+
+    /* Animasi progress bar */
+    @keyframes progress {
+        0% { width: 0%; }
+        50% { width: 70%; }
+        100% { width: 100%; }
+    }
+
+    /* Style buat loading pas refresh */
+    .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        display: none;
+        opacity: 0;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .loading-screen .loader-content {
+        text-align: center;
+    }
+
+    /* Icon yang ngedip-ngedip */
+    .loading-screen .fas {
+        font-size: 3rem;
+        color: #6366f1;
+        margin-bottom: 1rem;
+        animation: pulse 1.5s infinite;
+    }
+
+    /* Animasi ngedip */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    /* Animasi hover buat blog card */
+    .blog-card {
+        transition: transform 0.3s ease-out;
+    }
+</style>
+
+    <!-- Loading screen pertama kali -->
+    <div class="loading-container" id="first-time-loading">
+        <div class="loader">
+            <div class="cube">
+                <div class="side front"></div>
+                <div class="side back"></div>
+                <div class="side right"></div>
+                <div class="side left"></div>
+                <div class="side top"></div>
+                <div class="side bottom"></div>
+            </div>
+        </div>
+        <div class="loading-text">Loading</div>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+    </div>
+
+    <!-- Loading screen buat refresh -->
+    <div class="loading-screen" id="refresh-loading">
         <div class="loader-content">
             <i class="fas fa-code"></i>
             <p data-translate="loading">Tunggu Bentar Yaa...</p>
         </div>
     </div>
-</div>
 
+    <script>
+        // Fungsi buat nampilin loading
+        function showLoadingScreen(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'flex';
+            // Hack buat memaksa browser render ulang
+            element.offsetHeight;
+            element.style.opacity = '1';
+        }
 
+        // Fungsi buat nyembunyiin loading
+        function hideLoadingScreen(elementId, delay) {
+            const element = document.getElementById(elementId);
+            element.style.opacity = '0';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, delay);
+        }
 
+        // Cek apakah ini kunjungan pertama
+        document.addEventListener('DOMContentLoaded', () => {
+            const hasVisited = localStorage.getItem('hasVisited');
+            
+            if (!hasVisited) {
+                // Kalo pertama kali
+                showLoadingScreen('first-time-loading');
+                setTimeout(() => {
+                    hideLoadingScreen('first-time-loading', 500);
+                }, 3000);
+                localStorage.setItem('hasVisited', 'true');
+            } else {
+                // Kalo udah pernah berkunjung
+                showLoadingScreen('refresh-loading');
+                setTimeout(() => {
+                    hideLoadingScreen('refresh-loading', 500);
+                }, 1000);
+            }
+        });
+
+        // Animasi hover buat card blog
+        document.querySelectorAll('.blog-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
 
     <!-- Footer -->
     <footer>
