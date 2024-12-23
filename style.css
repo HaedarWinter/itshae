@@ -1332,7 +1332,7 @@ footer {
 }
 
 .response-time li::before {
-    content: "â€¢";
+    content: "•";
     position: absolute;
     left: 5px;
 }
