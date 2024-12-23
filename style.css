@@ -32,17 +32,6 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
 }
 
-/* Remove default outline for buttons and links */
-button, a {
-    outline: none; /* Remove the default outline */
-}
-
-/* Optional: Add a custom focus style for accessibility */
-button:focus, a:focus {
-    outline: 2px solid var(--primary-color); /* Custom focus outline */
-    outline-offset: 2px; /* Space between the outline and the element */
-}
-
 /* Glass Morphism */
 .glass {
     background: var(--glass-bg);
@@ -636,6 +625,8 @@ nav.scrolled .nav-links a {
     background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
     position: relative;
     overflow: hidden;
+    background: linear-gradient(180deg, var(--gradient-1), #fff);
+}
 }
 
 #projects::before {
@@ -659,7 +650,7 @@ nav.scrolled .nav-links a {
 
 .section-header h2 {
     font-size: 3rem;
-    color: var(--text-color);
+    color: #ffffff;
     margin-bottom: 20px;
     position: relative;
     display: inline-block;
@@ -671,15 +662,15 @@ nav.scrolled .nav-links a {
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
+    width: 100px;
     height: 3px;
-    background: linear-gradient(90deg, #007bff, #00ff88);
+    background: #ffffffdb;
     border-radius: 2px;
 }
 
 .section-header p {
     font-size: 1.2rem;
-    color: #666;
+    color: #ffffffad;
     max-width: 600px;
     margin: 0 auto;
     line-height: 1.6;
@@ -835,8 +826,9 @@ html {
 /* Achievements Section */
 #achievements {
     padding: 100px 20px;
-    background: white;
+   
 }
+
 
 .achievements-list {
     max-width: 1200px;
@@ -862,19 +854,20 @@ html {
 .achievement-card h3 {
     font-size: 1.5rem;
     margin-bottom: 15px;
-    color: var(--text-color);
+    color: #f5f5f5e3;
+    
 }
 
 .achievement-card p {
     font-size: 1rem;
-    color: #666;
+    color: #f5f5f5e3;
     line-height: 1.6;
 }
 
 /* Contact Section */
 #contact {
     padding: 100px 20px;
-    background: #f9f9f9;
+    
 }
 
 .contact-form {
@@ -882,17 +875,45 @@ html {
     margin: 0 auto;
     padding: 30px;
     width: 90%;
+    
 }
 
 .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 25px;   
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: var(--text-color);
+    color: #f5f5f5e3;
+    
+}
+/* Mengubah warna placeholder */
+input::placeholder,
+textarea::placeholder {
+    color: #bbb; /* Ubah sesuai dengan warna yang diinginkan */
+    font-style: var(--font-body); /* Opsional: tambahkan gaya lain */
+    opacity: 0.8; /* Opsional: atur transparansi */
+    
+}
+
+/* Mengubah warna placeholder saat elemen di-fokus */
+input:focus::placeholder,
+textarea:focus::placeholder {
+    color: #f5f5f5; /* Warna placeholder saat mengetik */
+    opacity: 0.5;
+}
+
+label{
+    pointer-events: none;
+    outline: none;
+    
+}
+
+input:focus, textarea:focus {
+    box-shadow: 0 0 5px rgba(245, 245, 245, 0.5); /* Alternatif efek fokus */
+    background: var(--glass-border);
 }
 
 input, textarea {
@@ -900,31 +921,52 @@ input, textarea {
     padding: 12px 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
+    background: transparent;
     font-size: 16px;
     font-family: var(--font-body);
+    outline: none;
+    
 }
+
+input#subject,#email,#name,#message {
+    color: white;
+}
+
 
 textarea {
     min-height: 120px;
     resize: vertical;
+    
 }
 
 button {
-    background: var(--gradient-2);
+    background: var(--glass-bg);
     color: white;
     padding: 12px 30px;
-    border: none;
+    border: 1px solid var(--glass-border);
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
     font-size: 1rem;
     font-weight: 500;
     font-family: var(--font-body);
+    outline: none; /* Menghapus outline default */
 }
 
+/* Tambahkan efek hover */
 button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Hilangkan outline saat button di-fokus */
+button:focus {
+    outline: none; /* Menghapus outline biru saat di-fokuskan */
+}
+
+/* Opsional: Tambahkan gaya fokus alternatif */
+button:focus {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); /* Glow efek fokus */
 }
 
 /* Footer */
@@ -1106,4 +1148,328 @@ footer {
     .achievement-card h3 {
         font-size: 1.3rem;
     }
+}
+
+/* Blog Section Styles */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.blog-card {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    color: #f5f5f5e3;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+}
+
+.blog-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.blog-content {
+    padding: 1rem;
+}
+
+.blog-tags {
+    margin-bottom: 1rem;
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    font-weight: 400;
+}
+
+.blog-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.read-more {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 5px 5px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.read-more:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Testimonials Section Styles */
+.testimonials-slider {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.testimonial-card {
+    padding: 2rem;
+    text-align: center;
+    color: #f5f5f5e3;
+}
+
+.testimonial-image img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.testimonial-text {
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+/* Theme Toggle Styles */
+.theme-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+/* Language Selector Styles */
+.language-selector {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 1000;
+}
+
+/* Loading Animation Styles */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader {
+    text-align: center;
+    color: white;
+}
+
+.loader i {
+    font-size: 3rem;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Portfolio Download Button Styles */
+.portfolio-download {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+/* Contact Section Styles */
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    color: #f5f5f5e3;
+}
+
+@media (max-width: 768px) {
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Contact Info Styles */
+.contact-info {
+    padding: 2rem;
+}
+
+.response-time, .preferred-contact, .location-info {
+    margin-bottom: 2rem;
+}
+
+.response-time ul {
+    list-style: none;
+    padding: 0;
+}
+
+.response-time li {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.response-time li::before {
+    content: "â€¢";
+    position: absolute;
+    left: 5px;
+}
+
+/* Preferred Contact Methods */
+.contact-methods {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.method-btn {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.method-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.method-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Map Container */
+.map-container {
+    margin-top: 4rem;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* FAQ Section Styles */
+.faq-section {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    color: #f5f5f5e3;
+}
+
+.faq-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.faq-item {
+    margin-bottom: 1rem;
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem;
+    background: rgb(12 11 11 / 10%);
+    border-radius: 4px;
+}
+
+.faq-question h4 {
+    margin: 0;
+}
+
+.faq-answer {
+    display: none;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+    display: block;
+    border: 0.2px solid rgb(255 255 255);
+    border-radius: 4px;
+    margin: 40px 20px 0 20px;
+    background: #ffffff12;
+    transition: all 0.3s ease;
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(180deg);
+}
+.faq-question i {
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+/*responive*/
+@media (max-width: 768px) {
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+    .read-more {
+        font-size: 0.8rem;
+    }
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 480px) {
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+    .read-more {
+        font-size: 0.8rem;
+    }
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Style Form yang diperbagus */
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    margin-top: 0.5rem;
+}
+
+/* Icons */
+.contact-info h3 i {
+    margin-right: 0.5rem;
+}
+
+/* Animations */
+.fa-chevron-down {
+    transition: transform 0.3s ease;
 }
