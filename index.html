@@ -1038,7 +1038,8 @@
     </section>
 
 
-    <script>  
+    <script>
+        /*
         // Fungsi buat nampilin loading
         function showLoadingScreen(elementId) {
             const element = document.getElementById(elementId);
@@ -1075,6 +1076,144 @@
                 }, 2000);
             }
         });
+         // Fungsi buat nampilin loading
+function showLoadingScreen(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.style.display = 'flex';
+        element.offsetHeight; // Hack buat refresh rendering
+        element.style.opacity = '1';
+    }
+}
+
+/* // Fungsi buat nyembunyiin loading
+function hideLoadingScreen(elementId, delay) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.style.opacity = '0';
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, delay);
+    }
+}
+
+// Cek apakah loading pertama perlu ditampilkan lagi
+document.addEventListener('DOMContentLoaded', () => {
+    const lastVisit = localStorage.getItem('lastVisit'); // Ambil data waktu terakhir
+    const now = new Date().getTime();
+    const oneMinute = 60 * 1000; // 60 detik dalam milidetik
+
+    if (!lastVisit || now - lastVisit > oneMinute) {
+        // Jika belum ada lastVisit atau sudah lewat 60 detik
+        showLoadingScreen('first-time-loading'); // Tampilkan Gojo
+        setTimeout(() => {
+            hideLoadingScreen('first-time-loading', 500);
+        }, 3000);
+        localStorage.setItem('lastVisit', now); // Simpan waktu sekarang sebagai lastVisit
+    } else {
+        // Jika belum lewat 60 detik, tampilkan loading biasa (FA Code)
+        showLoadingScreen('refresh-loading');
+        setTimeout(() => {
+            hideLoadingScreen('refresh-loading', 500);
+        }, 2000);
+    }
+});  
+
+// Fungsi buat nampilin loading
+function showLoadingScreen(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.style.display = 'flex';
+        element.offsetHeight; // Hack buat refresh rendering
+        element.style.opacity = '1';
+    }
+}
+
+/* // Fungsi buat nyembunyiin loading
+function hideLoadingScreen(elementId, delay) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.style.opacity = '0';
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, delay);
+    }
+}
+
+// Cek apakah loading pertama perlu ditampilkan lagi
+document.addEventListener('DOMContentLoaded', () => {
+    const lastVisit = localStorage.getItem('lastVisit'); // Ambil data waktu terakhir
+    const now = new Date().getTime();
+    const oneDay = 24 * 60 * 60 * 1000; // 24 jam dalam milidetik
+
+    if (!lastVisit || now - lastVisit > oneDay) {
+        // Jika belum ada lastVisit atau sudah lewat 24 jam
+        showLoadingScreen('first-time-loading'); // Tampilkan Gojo
+        setTimeout(() => {
+            hideLoadingScreen('first-time-loading', 500);
+        }, 3000);
+        localStorage.setItem('lastVisit', now); // Simpan waktu sekarang sebagai lastVisit
+    } else {
+        // Jika belum lewat 24 jam, tampilkan loading biasa (FA Code)
+        showLoadingScreen('refresh-loading');
+        setTimeout(() => {
+            hideLoadingScreen('refresh-loading', 500);
+        }, 2000);
+    }
+}); 
+*/ 
+// Fungsi buat nampilin loading
+function showLoadingScreen(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.style.display = 'flex';
+        element.offsetHeight; // Hack buat refresh rendering
+        element.style.opacity = '1';
+    }
+}
+
+// Fungsi buat nyembunyiin loading
+function hideLoadingScreen(elementId, delay) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.style.opacity = '0';
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, delay);
+    }
+}
+
+// Cek kunjungan untuk menampilkan loading
+document.addEventListener('DOMContentLoaded', () => {
+    // Perbarui jumlah kunjungan terlebih dahulu
+    let visitCount = localStorage.getItem('visitCount') || 0; // Ambil jumlah kunjungan
+    visitCount = parseInt(visitCount);
+    localStorage.setItem('visitCount', visitCount + 1); // Perbarui jumlah kunjungan
+
+    if (visitCount === 0) {
+        // Kunjungan pertama kali
+        showLoadingScreen('first-time-loading'); // Tampilkan Gojo
+        setTimeout(() => {
+            hideLoadingScreen('first-time-loading', 500);
+        }, 3000);
+    } else {
+        // Kunjungan setelah pertama
+        if (visitCount % 3 === 0) {
+            // Jika kunjungan kelipatan 3, tampilkan loading Gojo
+            showLoadingScreen('first-time-loading');
+            setTimeout(() => {
+                hideLoadingScreen('first-time-loading', 500);
+            }, 3000);
+        } else {
+            // Selain itu, tampilkan loading biasa (FA Code)
+            showLoadingScreen('refresh-loading');
+            setTimeout(() => {
+                hideLoadingScreen('refresh-loading', 500);
+            }, 2000);
+        }
+    }
+});
+
         // Animasi hover buat card blog
         document.querySelectorAll('.blog-card').forEach(card => {
             card.addEventListener('mouseenter', () => {
