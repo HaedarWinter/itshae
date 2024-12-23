@@ -15,7 +15,7 @@ document.querySelectorAll('.nav-links a').forEach(link => {
     });
 });
 
-// Social Media Links Configuration
+// Social Media Links
 const socialMediaConfig = {
     whatsapp: {
         url: 'https://wa.me/6285171699066',
@@ -243,104 +243,173 @@ document.querySelectorAll('.fade-in, .progress').forEach(element => {
     observer.observe(element);
 });
 
-
-// EmailJS Configuration
-document.addEventListener('DOMContentLoaded', function() {
-    emailjs.init("oNoHlclEaJgq6BQ8l");
+// Form Submission Handler
+const contactForm = document.getElementById('contactForm');
+contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Add your form submission logic here
+    console.log('Form submitted');
+    contactForm.reset();
 });
 
-// Form Submission Handler
+// Navigation Background Change on Scroll
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
+
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Form field validation
+function validateForm(formData) {
+    const errors = [];
+    
+    // Name validation (minimum 2 characters)
+    if (formData.name.length < 2) {
+        errors.push('Name must be at least 2 characters long');
+    }
+    
+    // Email validation
+    if (!isValidEmail(formData.email)) {
+        errors.push('Please enter a valid email address');
+    }
+    
+    // Subject validation (minimum 3 characters)
+    if (formData.subject.length < 3) {
+        errors.push('Subject must be at least 3 characters long');
+    }
+    
+    // Message validation (minimum 10 characters)
+    if (formData.message.length < 10) {
+        errors.push('Message must be at least 10 characters long');
+    }
+    
+    return errors;
+}
+
+// Show alert message
+function showAlert(type, message) {
+    const alertElement = document.getElementById(`${type}-message`);
+    if (alertElement) {
+        alertElement.textContent = message;
+        alertElement.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            alertElement.style.display = 'none';
+        }, 5000);
+    }
+}
+
+// Update button state
+function updateButtonState(button, isLoading) {
+    if (isLoading) {
+        button.disabled = true;
+        button.classList.add('loading');
+        button.innerHTML = '<span class="loading-spinner"></span>Sending...';
+    } else {
+        button.disabled = false;
+        button.classList.remove('loading');
+        button.innerHTML = 'Send Message';
+    }
+}
+
+// Main form submission handler
 document.getElementById('contactForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const submitBtn = document.getElementById('submit-btn');
-    const successMessage = document.getElementById('success-message');
-    const errorMessage = document.getElementById('error-message');
+    const form = this;
     
-    // Validate form
-    if (!validateForm()) {
-        return;
-    }
+    // Clear previous messages
+    document.getElementById('success-message').style.display = 'none';
+    document.getElementById('error-message').style.display = 'none';
     
-    // Disable submit button and show loading state
-    submitBtn.disabled = true;
-    submitBtn.classList.add('loading');
-    submitBtn.innerHTML = '<span class="loading-spinner"></span>Sending...';
-    
-    // Hide any existing messages
-    successMessage.style.display = 'none';
-    errorMessage.style.display = 'none';
-
-    const templateParams = {
-        from_name: document.getElementById('name').value.trim(),
-        from_email: document.getElementById('email').value.trim(),
+    // Collect form data
+    const formData = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
         subject: document.getElementById('subject').value.trim(),
         message: document.getElementById('message').value.trim()
     };
-
+    
+    // Validate form
+    const validationErrors = validateForm(formData);
+    if (validationErrors.length > 0) {
+        showAlert('error', validationErrors.join('\n'));
+        return;
+    }
+    
+    // Prepare EmailJS parameters
+    const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        to_name: 'Website Owner', // Add your name here
+        reply_to: formData.email
+    };
+    
+    // Update button to loading state
+    updateButtonState(submitBtn, true);
+    
     try {
-        // Kirim email ke pemilik website
-        await emailjs.send(
-            'service_opuy3c6', 
-            'template_xrrt72a', 
-            templateParams
-        );
-        // Kirim auto-reply ke pengirim
-        await emailjs.send(
-            'service_opuy3c6', 
-            'template_moc834p', 
-            templateParams
-        );
+        // Send notification to website owner
+        await emailjs.send('service_opuy3c6', 'template_xrrt72a', templateParams);
         
-        // Success handling
-        successMessage.textContent = 'Pesan berhasil terkirim! Terima kasih telah menghubungi saya.';
-        successMessage.style.display = 'block';
-        document.getElementById('contactForm').reset();
+        // Send auto-reply to sender
+        await emailjs.send('service_opuy3c6', 'template_moc834p', {
+            ...templateParams,
+            to_email: formData.email
+        });
         
+        // Show success message
+        showAlert('success', 'Thank you for your message! I will get back to you soon.');
+        
+        // Reset form
+        form.reset();
+        
+        // Track successful submission (if analytics is set up)
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'form_submission', {
+                'event_category': 'Contact',
+                'event_label': 'Success'
+            });
+        }
     } catch (error) {
         console.error('EmailJS Error:', error);
-        errorMessage.textContent = 'Gagal mengirim pesan. Silakan coba lagi nanti.';
-        errorMessage.style.display = 'block';
+        showAlert('error', 'Failed to send message. Please try again later or contact me directly via email.');
+        
+        // Track error (if analytics is set up)
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'form_submission_error', {
+                'event_category': 'Contact',
+                'event_label': error.message
+            });
+        }
     } finally {
         // Reset button state
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('loading');
-        submitBtn.innerHTML = 'Send Message';
+        updateButtonState(submitBtn, false);
     }
 });
 
-// Validation Function
-function validateForm() {
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const subject = document.getElementById('subject').value.trim();
-    const message = document.getElementById('message').value.trim();
-    const errorMessage = document.getElementById('error-message');
-    
-    if (!name || !email || !subject || !message) {
-        errorMessage.textContent = 'Semua field harus diisi';
-        errorMessage.style.display = 'block';
-        return false;
-    }
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        errorMessage.textContent = 'Format email tidak valid';
-        errorMessage.style.display = 'block';
-        return false;
-    }
-    
-    return true;
-}
-
-// Styles for alerts and loading
-const emailStyles = document.createElement('style');
-emailStyles.textContent = `
+// Add these styles for better alert messages
+const formStyles = document.createElement('style');
+formStyles.textContent = `
     .alert {
         padding: 15px;
         margin: 15px 0;
-        border-radius: 4px;
+        border-radius: 8px;
         display: none;
+        font-size: 14px;
+        transition: all 0.3s ease;
     }
 
     .success {
@@ -353,11 +422,7 @@ emailStyles.textContent = `
         background-color: rgba(239, 68, 68, 0.1);
         border: 1px solid #ef4444;
         color: #ef4444;
-    }
-
-    #submit-btn.loading {
-        opacity: 0.7;
-        cursor: not-allowed;
+        white-space: pre-line;
     }
 
     .loading-spinner {
@@ -369,10 +434,290 @@ emailStyles.textContent = `
         border-top-color: #fff;
         animation: spin 1s ease-in-out infinite;
         margin-right: 10px;
+        vertical-align: middle;
     }
 
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
+
+    #submit-btn {
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    #submit-btn.loading {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
 `;
-document.head.appendChild(emailStyles);
+document.head.appendChild(formStyles);
+// Theme Toggle Functionality
+const themeSwitch = document.getElementById('theme-switch');
+const body = document.body;
+
+themeSwitch.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    const icon = themeSwitch.querySelector('i');
+    const text = themeSwitch.querySelector('span');
+    
+    if (body.classList.contains('dark-mode')) {
+        icon.classList.replace('fa-moon', 'fa-sun');
+        text.textContent = 'Light Mode';
+    } else {
+        icon.classList.replace('fa-sun', 'fa-moon');
+        text.textContent = 'Dark Mode';
+    }
+});
+
+// Fungsi Pilih Bahasa
+const languageSwitch = document.getElementById('language-switch');
+const translations = {
+    en: {
+        // Nambahin English translations
+    },
+    id: {
+        // Nambahin Indonesian translations
+    }
+};
+
+languageSwitch.addEventListener('change', (e) => {
+    const language = e.target.value;
+    updateLanguage(language);
+});
+
+function updateLanguage(language) {
+    const elements = document.querySelectorAll('[data-translate]');
+    elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        element.textContent = translations[language][key];
+    });
+}
+
+// Loading Animasi
+window.addEventListener('load', () => {
+    const loadingScreen = document.getElementById('loading-screen');
+    setTimeout(() => {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+    }, 1500);
+});
+
+// Blog Card Hover Animation
+const blogCards = document.querySelectorAll('.blog-card');
+blogCards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-10px)';
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+    });
+});
+
+// Testimonial Slider
+let currentTestimonial = 0;
+const testimonials = document.querySelectorAll('.testimonial-card');
+
+function showTestimonial(index) {
+    testimonials.forEach((testimonial, i) => {
+        testimonial.style.display = i === index ? 'block' : 'none';
+    });
+}
+
+// Auto-rotate testimonials
+setInterval(() => {
+    currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+    showTestimonial(currentTestimonial);
+}, 5000);
+
+// Tunggu sampai DOM sepenuhnya dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    // Inisialisasi Fungsi FAQ
+    initFAQ();
+    
+    // Inisialisasi Tombol Metode Kontak
+    initContactMethods();
+    
+    // Inisialisasi App Utama
+    App.init();
+});
+
+// Fungsi FAQ
+function initFAQ() {
+    document.querySelectorAll('.faq-question').forEach(question => {
+        question.addEventListener('click', () => {
+            const faqItem = question.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            
+            // Tutup semua FAQ
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Buka FAQ yang diklik jika sebelumnya tidak aktif
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        });
+    });
+}
+
+// Tombol Metode Kontak
+function initContactMethods() {
+    document.querySelectorAll('.method-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Hapus kelas active dari semua tombol
+            document.querySelectorAll('.method-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            // Tambah kelas active ke tombol yang diklik
+            btn.classList.add('active');
+            
+            // Perbarui dropdown pilihan di form
+            const method = btn.dataset.method;
+            document.getElementById('contact-method').value = method;
+        });
+    });
+}
+
+const App = {
+    // State management
+    state: {
+        currentTestimonial: 0,
+        isDarkMode: false,
+        currentLanguage: 'en'
+    },
+
+    // Cache DOM elements
+    elements: {
+        themeSwitch: null,
+        languageSwitch: null,
+        loadingScreen: null,
+        blogCards: null,
+        testimonials: null,
+        body: document.body
+    },
+
+    // Translations object
+    translations: {
+        en: {
+            darkMode: 'Dark Mode',
+            lightMode: 'Light Mode',
+            loading: 'Loading...'
+            // Add more English translations as needed
+        },
+        id: {
+            darkMode: 'Mode Gelap',
+            lightMode: 'Mode Terang',
+            loading: 'Tunggu Bentar Yaa...'
+            // Add more Indonesian translations as needed
+        }
+    },
+
+    // Initialize the application
+    init() {
+        this.cacheElements();
+        this.bindEvents();
+        this.initializeLoading();
+        this.initializeTestimonials();
+        this.initializeBlogCards();
+    },
+
+    // Cache all DOM elements
+    cacheElements() {
+        this.elements.themeSwitch = document.getElementById('theme-switch');
+        this.elements.languageSwitch = document.getElementById('language-switch');
+        this.elements.loadingScreen = document.getElementById('loading-screen');
+        this.elements.blogCards = document.querySelectorAll('.blog-card');
+        this.elements.testimonials = document.querySelectorAll('.testimonial-card');
+    },
+
+    // Bind all event listeners
+    bindEvents() {
+        // Theme switching
+        this.elements.themeSwitch?.addEventListener('click', () => this.toggleTheme());
+
+        // Language switching
+        this.elements.languageSwitch?.addEventListener('change', (e) => this.updateLanguage(e.target.value));
+    },
+
+    // Theme toggling functionality
+    toggleTheme() {
+        this.state.isDarkMode = !this.state.isDarkMode;
+        this.elements.body.classList.toggle('dark-mode');
+
+        const icon = this.elements.themeSwitch.querySelector('i');
+        const text = this.elements.themeSwitch.querySelector('span');
+
+        if (this.state.isDarkMode) {
+            icon?.classList.replace('fa-moon', 'fa-sun');
+            text.textContent = this.translations[this.state.currentLanguage].lightMode;
+        } else {
+            icon?.classList.replace('fa-sun', 'fa-moon');
+            text.textContent = this.translations[this.state.currentLanguage].darkMode;
+        }
+    },
+
+    // Language switching functionality
+    updateLanguage(language) {
+        this.state.currentLanguage = language;
+        const elements = document.querySelectorAll('[data-translate]');
+        
+        elements.forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (this.translations[language][key]) {
+                element.textContent = this.translations[language][key];
+            }
+        });
+    },
+
+    // Loading screen functionality
+    initializeLoading() {
+        window.addEventListener('DOMContentLoaded', () => {
+            if (this.elements.loadingScreen) {
+                setTimeout(() => {
+                    this.elements.loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        this.elements.loadingScreen.style.display = 'none';
+                    }, 500);
+                }, 1000);
+            }
+        });
+    },
+
+    // Blog cards animation
+    initializeBlogCards() {
+        this.elements.blogCards?.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    },
+
+    // Testimonial slider functionality
+    initializeTestimonials() {
+        if (this.elements.testimonials?.length) {
+            this.showTestimonial(0);
+            setInterval(() => {
+                this.state.currentTestimonial = 
+                    (this.state.currentTestimonial + 1) % this.elements.testimonials.length;
+                this.showTestimonial(this.state.currentTestimonial);
+            }, 5000);
+        }
+    },
+
+    showTestimonial(index) {
+        this.elements.testimonials?.forEach((testimonial, i) => {
+            testimonial.style.display = i === index ? 'block' : 'none';
+        });
+    }
+};
+
+// Initialize the application when DOM is ready
+document.addEventListener('DOMContentLoaded', () => App.init());
