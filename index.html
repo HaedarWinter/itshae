@@ -1038,8 +1038,7 @@
     </section>
 
 
-    <script>
-        
+    <script>  
         // Fungsi buat nampilin loading
         function showLoadingScreen(elementId) {
             const element = document.getElementById(elementId);
@@ -1073,16 +1072,9 @@
                 showLoadingScreen('refresh-loading');
                 setTimeout(() => {
                     hideLoadingScreen('refresh-loading', 500);
-                }, 1000);
+                }, 2000);
             }
         });
-
-        /*
-        localStorage.removeItem('hasVisited');
-        */
-
-        
-
         // Animasi hover buat card blog
         document.querySelectorAll('.blog-card').forEach(card => {
             card.addEventListener('mouseenter', () => {
@@ -1092,26 +1084,6 @@
                 card.style.transform = 'translateY(0)';
             });
         });
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Handle first visit
-    const hasVisited = localStorage.getItem('hasVisited');
-    
-    if (!hasVisited) {
-        showLoadingScreen('first-time-loading');      
-        setTimeout(() => {
-            hideLoadingScreen('first-time-loading', 500);
-        }, 3000);
-        localStorage.setItem('hasVisited', 'true');
-    } else {
-        showLoadingScreen('refresh-loading');
-        setTimeout(() => {
-            hideLoadingScreen('refresh-loading', 500);
-        }, 1000);
-    }
-});
     </script>
 
     <script>
