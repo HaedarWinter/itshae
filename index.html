@@ -18,6 +18,7 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    
 
     <!-- EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -46,6 +47,8 @@
         </div>
     </nav>
 
+
+
     <!-- Hero Section -->
     <section id="hero">
         <div class="hero-content glass">
@@ -70,6 +73,7 @@
             </div>
         </div>
     </section>
+    
 
     <!-- About Section -->
 <section id="about">
@@ -220,6 +224,7 @@
         </div>
     </section>
 
+
     <!-- Achievements Section -->
     <section id="achievements">
         <div class="section-header">
@@ -251,40 +256,255 @@
         </div>
     </section>
 
-     <!-- Contact form section -->
+
+
+<!-- Contact Section -->
 <section id="contact">
     <div class="section-header">
         <h2>Contact Me</h2>
         <p>Let's work together!</p>
     </div>
-    <div class="contact-form glass fade-in">
-        <form id="contactForm">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="user_name" placeholder="Your Name" required>
+
+    <div class="contact-container">
+        <!-- Contact Info sama Map Column -->
+        <div class="contact-info glass fade-in">
+            <div class="response-time">
+                <h3><i class="fas fa-clock"></i> Response Time</h3>
+                <ul>
+                    <li>Emails: Within 24 hours</li>
+                    <li>WhatsApp: Within 2-3 hours</li>
+                    <li>Business hours: 09:00 - 17:00 WIB</li>
+                </ul>
             </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="user_email" placeholder="Your Email" required>
+
+            <div class="preferred-contact">
+                <h3><i class="fas fa-star"></i> Preferred Contact Methods</h3>
+                <div class="contact-methods">
+                    <button class="method-btn active" data-method="whatsapp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button class="method-btn" data-method="email">
+                        <i class="fas fa-envelope"></i> Email
+                    </button>
+                    <button class="method-btn" data-method="linkedin">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" placeholder="Subject" required>
+
+            <div class="location-info">
+                <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+                <p>SMK Yadika Soreang, Bandung, Indonesia</p>
+                <!-- Google Maps iframe -->
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.2988322556657!2d107.5298873!3d-6.9777397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68ee7bcb6b0f71%3A0x86c17d710bc4df2b!2sSMK%20Yadika%20Soreang!5e0!3m2!1sen!2sid!4v1703338339948!5m2!1sen!2sid" 
+                        width="100%" 
+                        height="250" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Your Message" rows="6" required></textarea>
+        </div>
+
+        <!-- Contact Form Column -->
+        <div class="contact-form glass fade-in">
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="user_name" placeholder="Nama Anda" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="user_email" placeholder="Email Anda" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-method">Preferred Contact Method</label>
+                    <select id="contact-method" name="contact_method" required>
+                        <option value="">Select a method</option>
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="email">Email</option>
+                        <option value="linkedin">LinkedIn</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" placeholder="Siapa Yang Anda Ingin Hubungi" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Isi Pesan Anda" rows="6" required></textarea>
+                </div>
+                <button type="submit" id="submit-btn">Send Message</button>
+                <div id="success-message" class="alert success" style="display: none;">
+                    Message sent successfully!
+                </div>
+                <div id="error-message" class="alert error" style="display: none;">
+                    Failed to send message. Please try again.
+                </div>
+            </form>
+        </div>
+    </div>
+    
+
+    <!-- FAQ Section -->
+    <div class="faq-section glass fade-in">
+        <h3><i class="fas fa-question-circle"></i> Frequently Asked Questions</h3>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h4>What services do you offer?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>I offer web development, and basic game development services. This includes frontend development, UI/UX design.</p>
+                </div>
             </div>
-            <button type="submit" id="submit-btn">Send Message</button>
-            <div id="success-message" class="alert success" style="display: none;">
-                Message sent successfully!
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h4>What are your working hours?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>I’m available Monday through Friday from 5:00 PM to 9:00 PM WIB, as I am a student with a daily schedule from 7:00 AM to 5:00 PM WIB. On Saturdays and Sundays, I am usually fully available, although this may vary occasionally.</p>
+                </div>
             </div>
-            <div id="error-message" class="alert error" style="display: none;">
-                Failed to send message. Please try again.
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h4>Do you take on freelance projects?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, I'm open to freelance projects. Please contact me with your project details and we can discuss timeline and requirements.</p>
+                </div>
             </div>
-        </form>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h4>What is your project workflow?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>My workflow typically includes: initial consultation, requirement gathering, design phase, development, testing, and deployment with regular updates and communication throughout.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- Blog Section -->
+<section id="blog">
+    <div class="section-header">
+        <h2>Blog & Articles</h2>
+        <p>Sharing knowledge and experiences</p>
+    </div>
+    <div class="blog-grid">
+        <article class="blog-card glass fade-in">
+            <div class="blog-image">
+                <img src="assets/blog-1.svg" alt="Web Development Tips">
+            </div>
+            <div class="blog-content">
+                <div class="blog-tags">
+                    <span class="tag">Web Dev</span>
+                    <span class="tag">Tutorial</span>
+                </div>
+                <h3>Getting Started with HTML & CSS</h3>
+                <p>Learn the basics of web development with this comprehensive guide...</p>
+                <div class="blog-footer">
+                    <span class="date"><i class="far fa-calendar"></i> Dec 20, 2024</span>
+                    <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </article>
+
+        <article class="blog-card glass fade-in">
+            <div class="blog-image">
+                <img src="assets/blog-2.svg" alt="Game Development">
+            </div>
+            <div class="blog-content">
+                <div class="blog-tags">
+                    <span class="tag">Game Dev</span>
+                    <span class="tag">Godot</span>
+                </div>
+                <h3>Creating Your First Game with Godot</h3>
+                <p>Step-by-step guide to creating a simple 2D game using Godot Engine...</p>
+                <div class="blog-footer">
+                    <span class="date"><i class="far fa-calendar"></i> Dec 15, 2024</span>
+                    <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials">
+    <div class="section-header">
+        <h2>Testimonials</h2>
+        <p>What others say about me</p>
+    </div>
+    <div class="testimonials-slider">
+        <div class="testimonial-card glass fade-in">
+            <div class="testimonial-image">
+                <img src="assets/testimonial-1.svg" alt="Teacher">
+            </div>
+            <div class="testimonial-content">
+                <p class="testimonial-text">"Ropi is a dedicated student with exceptional problem-solving skills. His passion for programming is evident in every project."</p>
+                <div class="testimonial-author">
+                    <h4>Bu Esa Suri Ratnasuminar, M.Pd </h4>
+                    <p>Math Teacher, SMK Yadika Soreang</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="testimonial-card glass fade-in">
+            <div class="testimonial-image">
+                <img src="assets/testimonial-2.svg" alt="Project Client">
+            </div>
+            <div class="testimonial-content">
+                <p class="testimonial-text">"Working with Ropi on our class website project was a great experience. He brings creativity and technical expertise to the table."</p>
+                <div class="testimonial-author">
+                    <h4>Muhammad Rifqi, SMK Yadika Soreang</h4>
+                    <p>Class Project Coordinator</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Theme Toggle Button -->
+<div class="theme-toggle">
+    <button id="theme-switch" class="glass-btn">
+        <i class="fas fa-moon"></i>
+        <span data-translate="darkMode">Dark Mode</span>
+    </button>
+</div>
+
+<!-- Language Selector -->
+<div class="language-selector">
+    <select id="language-switch" class="glass-btn">
+        <option value="en">English</option>
+        <option value="id">Bahasa Indonesia</option>
+    </select>
+</div>
+
+<!-- Loading Screen -->
+<div class="loading-screen" id="loading-screen">
+    <div class="loader">
+        <div class="loader-content">
+            <i class="fas fa-code"></i>
+            <p data-translate="loading">Tunggu Bentar Yaa...</p>
+        </div>
+    </div>
+</div>
+
+
+
 
     <!-- Footer -->
     <footer>
