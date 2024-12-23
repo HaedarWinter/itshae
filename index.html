@@ -494,89 +494,200 @@
 </div>
 
 <style>
-    /* Style buat animasi loading pertama kali */
-    .loading-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.98);
-        display: none; /* Awalnya sembunyi dulu */
-        opacity: 0; /* Biar bisa di-fade in */
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999; /* Pastiin tampil paling depan */
-        transition: opacity 0.5s ease-out;
-    }
+/* Style untuk container loading */
+.loading-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(17, 17, 17, 0.98);
+    display: none;
+    opacity: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
 
-    /* Kotak loading yang muter-muter */
-    .loader {
-        width: 100px;
-        height: 100px;
-        position: relative;
-        perspective: 800px;
-    }
+/* Container untuk Prison Realm */
+.loader {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    perspective: 1000px;
+}
 
-    /* Si kubus yang muter */
-    .cube {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        transform-style: preserve-3d;
-        animation: rotate 2s infinite linear;
-    }
+/* Prison Realm rotating container */
+.cube {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotate 8s infinite linear;
+}
 
-    /* Sisi-sisi kubus */
-    .side {
-        position: absolute;
-        width: 100px;
-        height: 100px;
-        background: linear-gradient(45deg, #6366f1, #8b5cf6);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-    }
+/* Styling untuk setiap sisi Prison Realm */
+.side {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+    border: 3px solid 0 0 20px rgba(255, 24, 24, 0.837);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    backface-visibility: visible;
+    background-image: url('img/gojokubus.svg');
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay;
+}
 
-    /* Posisi tiap sisi kubus */
-    .front  { transform: translateZ(50px); }
-    .back   { transform: translateZ(-50px) rotateY(180deg); }
-    .right  { transform: rotateY(-270deg) translateX(50px); transform-origin: top right; }
-    .left   { transform: rotateY(270deg) translateX(-50px); transform-origin: center left; }
-    .top    { transform: rotateX(-270deg) translateY(-50px); transform-origin: top center; }
-    .bottom { transform: rotateX(270deg) translateY(50px); transform-origin: bottom center; }
+/* Menambahkan overlay effect */
+.side::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-    /* Animasi muter */
-    @keyframes rotate {
-        0% { transform: rotateX(0deg) rotateY(0deg); }
-        100% { transform: rotateX(360deg) rotateY(360deg); }
+/* Posisi tiap sisi dengan transformasi yang lebih realistis */
+.front  { 
+    transform: translateZ(100px);
+    animation: glow 2s ease-in-out infinite alternate;
+    background-image: url('img/gojokubus/depan.svg');
+}
+.back   { 
+    transform: translateZ(-100px) rotateY(180deg);
+    animation: glow 2s ease-in-out infinite alternate-reverse;
+    background-image: url('img/gojokubus/tangan.svg');
+}
+.right  { 
+    transform: rotateY(90deg) translateZ(100px);
+    animation: glow 2s ease-in-out infinite alternate;
+    background-image: url('img/gojokubus/real.svg');
+}
+.left   { 
+    transform: rotateY(-90deg) translateZ(100px);
+    animation: glow 2s ease-in-out infinite alternate-reverse;
+    background-image: url('img/gojokubus/kiri.svg');
+}
+.top    { 
+    transform: rotateX(90deg) translateZ(100px);
+    animation: glow 2s ease-in-out infinite alternate;
+    background-image: url('img/gojokubus/atass.svg');
+}
+.bottom { 
+    transform: rotateX(-90deg) translateZ(100px);
+    animation: glow 2s ease-in-out infinite alternate-reverse;
+    background-image: url('img/gojokubus/atas.svg');
+}
+
+/* Animasi rotasi yang lebih smooth dan realistis */
+@keyframes rotate {
+    0% {
+        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
     }
+    33% {
+        transform: rotateX(120deg) rotateY(120deg) rotateZ(120deg);
+    }
+    66% {
+        transform: rotateX(240deg) rotateY(240deg) rotateZ(240deg);
+    }
+    100% {
+        transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+    }
+}
+
+/* Animasi glow effect */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 24, 24, 0.837);
+    }
+    100% {
+        box-shadow: 0 0 40px rgba(143, 0, 0, 0.767);
+    }
+}
+
+/* Efek ambient light */
+.loader::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+}
 
     /* Text loading yang ada titik-titiknya */
     .loading-text {
-        margin-top: 2rem;
+        margin-top: 7rem;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         color: #6366f1;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         position: relative;
+        display: flex;
+        align-items: center;
     }
 
     .loading-text::after {
         content: '';
-        animation: dots 1.5s infinite;
+        animation: dots 2s infinite;
+        content: '';
+        display: inline-block;
+        width: 44px; /* Lebar untuk gambar titik-titik */
+        height: 44px; /* Tinggi untuk gambar titik-titik */
+        margin-left: 8px; /* Jarak antara teks dan animasi */
+        background: url('img/gojokubus/jogojo/1.svg') no-repeat center;
+        background-size: contain;
+        animation: dots 2s infinite;
     }
 
     /* Animasi titik-titik */
-    @keyframes dots {
-        0%, 20% { content: '.'; }
-        40% { content: '..'; }
-        60% { content: '...'; }
-        80%, 100% { content: ''; }
+@keyframes dots {
+    0%, 20% {
+        background-image: url('img/gojokubus/jogojoo/1.svg');
+        content: '.';
     }
+    40% {
+        background-image: url('img/gojokubus/jogojoo/2.svg');
+        content: '..';
+    }
+    60% {
+        background-image: url('img/gojokubus/jogojoo/3.svg');
+        content: '...';
+    }
+    80%, 100% {
+        background-image: url('img/gojokubus/jogojoo/4.svg');
+        content: '';
+    }
+}
 
     /* Progress bar biar keliatan ada prosesnya */
     .progress-bar {
-        width: 200px;
+        width: 500px;
         height: 3px;
         background: #e5e7eb;
         border-radius: 3px;
@@ -656,6 +767,7 @@
             <div class="progress"></div>
         </div>
     </div>
+    
 
     <!-- Loading screen buat refresh -->
     <div class="loading-screen" id="refresh-loading">
@@ -663,9 +775,271 @@
             <i class="fas fa-code"></i>
             <p data-translate="loading">Tunggu Bentar Yaa...</p>
         </div>
-    </div>
+    </div> 
+    
+    
+    <style>
+    /* Show/Hide Button */
+    .show-player-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: none;
+        cursor: pointer;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-color);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .show-player-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    /* Main Player Styles */
+    .audio-controls {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 300px;
+        padding: 15px;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        z-index: 1000;
+        transition: all 0.3s ease;
+        transform: translateY(0);
+    }
+    
+    .audio-controls.hidden {
+        transform: translateY(150%);
+    }
+    
+    /* Player Header */
+    .player-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        cursor: move;
+    }
+    
+    .drag-handle {
+        padding: 5px;
+        cursor: grab;
+    }
+    
+    .audio-title {
+        flex-grow: 1;
+        margin: 0 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Visualization Area */
+    .visualization-area {
+        height: 60px;
+        margin: 10px 0;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    #audio-visualizer {
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* Progress Bar */
+    .progress-area {
+        margin: 15px 0;
+    }
+    
+    .progress-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: var(--primary-color, #6366f1);
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.1s linear;
+    }
+    
+    .time-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        color: var(--text-color);
+    }
+    
+    /* Controls Area */
+    .controls-area {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 15px 0;
+    }
+    
+    .control-btn {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+    
+    .control-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .play-btn {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Volume Control */
+    .volume-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    #volume-slider {
+        width: 80px;
+        height: 4px;
+        -webkit-appearance: none;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+    }
+    
+    #volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        background: var(--primary-color, #6366f1);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    /* Playlist Area */
+    .playlist-area {
+        margin-top: 15px;
+    }
+    
+    #music-selector {
+        width: 100%;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        color: var(--text-color);
+        cursor: pointer;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .audio-controls {
+            width: 90%;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 20px;
+        }
+    
+        .audio-controls.hidden {
+            transform: translateX(-50%) translateY(150%);
+        }
+    }
+    </style>
+
+    <!-- Audio Toggle Button -->
+    <button id="show-player" class="show-player-btn glass-btn">
+        <i class="fas fa-music"></i>
+    </button>
+    
+    <!-- Enhanced Audio Player Section -->
+    <section id="audio-controls" class="audio-controls glass">
+        <div class="audio-wrapper">
+            <!-- Header with drag handle and close button -->
+            <div class="player-header">
+                <div class="drag-handle">
+                    <i class="fas fa-grip-lines"></i>
+                </div>
+                <div class="audio-title">
+                    <i class="fas fa-music"></i>
+                    <span id="now-playing">Now Playing: Background Music</span>
+                </div>
+                <button id="minimize-player" class="control-btn">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+    
+            <!-- Visualization Area -->
+            <div class="visualization-area">
+                <canvas id="audio-visualizer"></canvas>
+            </div>
+    
+            <!-- Progress Bar Area -->
+            <div class="progress-area">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="time-info">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+    
+            <!-- Controls Area -->
+            <div class="controls-area">
+                <button id="prev-track" class="control-btn">
+                    <i class="fas fa-backward"></i>
+                </button>
+                <button id="toggle-audio" class="control-btn play-btn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button id="next-track" class="control-btn">
+                    <i class="fas fa-forward"></i>
+                </button>
+                <div class="volume-control">
+                    <i class="fas fa-volume-up"></i>
+                    <input type="range" id="volume-slider" min="0" max="100" value="50">
+                </div>
+            </div>
+    
+            <!-- Playlist Area -->
+            <div class="playlist-area">
+                <select id="music-selector" class="glass-btn">
+                    <option value="assets/audio/yung kai - blue (Official Audio).mp3">yung kai - blue</option>
+                    <option value="assets/audio/backsound2.mp3">Jazz Ambient</option>
+                    <option value="assets/audio/backsound3.mp3">Piano Instrumental</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
 
     <script>
+        
         // Fungsi buat nampilin loading
         function showLoadingScreen(elementId) {
             const element = document.getElementById(elementId);
@@ -683,19 +1057,18 @@
                 element.style.display = 'none';
             }, delay);
         }
-
         // Cek apakah ini kunjungan pertama
         document.addEventListener('DOMContentLoaded', () => {
             const hasVisited = localStorage.getItem('hasVisited');
             
             if (!hasVisited) {
-                // Kalo pertama kali
+                // Kalo belum pernah berkunjung
                 showLoadingScreen('first-time-loading');
                 setTimeout(() => {
                     hideLoadingScreen('first-time-loading', 500);
                 }, 3000);
                 localStorage.setItem('hasVisited', 'true');
-            } else {
+            }else {
                 // Kalo udah pernah berkunjung
                 showLoadingScreen('refresh-loading');
                 setTimeout(() => {
@@ -703,6 +1076,12 @@
                 }, 1000);
             }
         });
+
+        /*
+        localStorage.removeItem('hasVisited');
+        */
+
+        
 
         // Animasi hover buat card blog
         document.querySelectorAll('.blog-card').forEach(card => {
@@ -713,6 +1092,289 @@
                 card.style.transform = 'translateY(0)';
             });
         });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Handle first visit
+    const hasVisited = localStorage.getItem('hasVisited');
+    
+    if (!hasVisited) {
+        showLoadingScreen('first-time-loading');      
+        setTimeout(() => {
+            hideLoadingScreen('first-time-loading', 500);
+        }, 3000);
+        localStorage.setItem('hasVisited', 'true');
+    } else {
+        showLoadingScreen('refresh-loading');
+        setTimeout(() => {
+            hideLoadingScreen('refresh-loading', 500);
+        }, 1000);
+    }
+});
+    </script>
+
+    <script>
+        class AudioController {
+    constructor() {
+        this.audio = new Audio();
+        this.audio.loop = true;
+        this.currentTrack = 'assets/audio/backsound1.mp3';
+        this.isPlaying = false;
+        this.isDragging = false;
+        
+        // DOM Elements
+        this.initializeElements();
+        
+        // Audio Context for Visualizer
+        this.initializeAudioContext();
+        
+        // Bind Events
+        this.bindEvents();
+        
+        // Load initial track
+        this.loadTrack(this.currentTrack);
+        
+        // Initialize Draggable
+        this.initializeDraggable();
+    }
+    
+    initializeElements() {
+        this.playerContainer = document.getElementById('audio-controls');
+        this.toggleBtn = document.getElementById('toggle-audio');
+        this.musicSelector = document.getElementById('music-selector');
+        this.nowPlaying = document.getElementById('now-playing');
+        this.progressBar = document.querySelector('.progress-bar');
+        this.progressFill = document.querySelector('.progress-fill');
+        this.currentTimeDisplay = document.getElementById('current-time');
+        this.durationDisplay = document.getElementById('duration');
+        this.volumeSlider = document.getElementById('volume-slider');
+        this.prevBtn = document.getElementById('prev-track');
+        this.nextBtn = document.getElementById('next-track');
+        this.showPlayerBtn = document.getElementById('show-player');
+        this.minimizeBtn = document.getElementById('minimize-player');
+        this.canvas = document.getElementById('audio-visualizer');
+        this.ctx = this.canvas.getContext('2d');
+    }
+    
+    initializeAudioContext() {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        this.analyser = this.audioContext.createAnalyser();
+        this.source = this.audioContext.createMediaElementSource(this.audio);
+        this.source.connect(this.analyser);
+        this.analyser.connect(this.audioContext.destination);
+        this.analyser.fftSize = 256;
+        this.bufferLength = this.analyser.frequencyBinCount;
+        this.dataArray = new Uint8Array(this.bufferLength);
+        
+        // Start visualization
+        this.visualize();
+    }
+    
+    bindEvents() {
+        // Playback Controls
+        this.toggleBtn.addEventListener('click', () => this.togglePlayback());
+        this.prevBtn.addEventListener('click', () => this.prevTrack());
+        this.nextBtn.addEventListener('click', () => this.nextTrack());
+
+        //show/Hide Player
+        this.showPlayerBtn.addEventListener('click',() => this.togglePlayerVisibility());
+        this.minimizeBtn.addEventListener('click',() => this.togglePlayerVisibility());
+        
+        // Progress Bar
+        this.progressBar.addEventListener('mousedown', (e) => this.startSeek(e));
+        document.addEventListener('mousemove', (e) => this.seeking(e));
+        document.addEventListener('mouseup', () => this.endSeek());
+        
+        // Track Selection
+        this.musicSelector.addEventListener('change', (e) => this.loadTrack(e.target.value));
+        
+        // Volume Control
+        this.volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value));
+        
+        // Time Update
+        this.audio.addEventListener('timeupdate', () => this.updateProgress());
+        
+        
+        // Audio Events
+        this.audio.addEventListener('ended', () => this.onTrackEnd());
+        this.audio.addEventListener('loadedmetadata', () => this.onTrackLoad());
+    }
+    
+    initializeDraggable() {
+        const dragHandle = document.querySelector('.drag-handle');
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        dragHandle.addEventListener('mousedown', (e) => {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+            isDragging = true;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                xOffset = currentX;
+                yOffset = currentY;
+                this.playerContainer.style.transform = 
+                    `translate(${currentX}px, ${currentY}px)`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    }
+    
+    togglePlayback() {
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        
+        if (this.isPlaying) {
+            this.audio.pause();
+            this.toggleBtn.innerHTML = '<i class="fas fa-play"></i>';
+        } else {
+            this.audio.play();
+            this.toggleBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        }
+        this.isPlaying = !this.isPlaying;
+    }
+
+    togglePlayerVisibility() {
+        const player = this.playerContainer;
+        const showBtn = this.showPlayerBtn;
+
+        if (player.classList.contains('hidden')) {
+            player.classList.remove('hidden');
+            showBtn.style.opacity = '0';
+            showBtn.style.pointerEvents = 'none';
+        } else {
+            player.classList.add('hidden');
+            showBtn.style.opacity = '1';
+            showBtn.style.pointerEvents = 'auto';
+        }
+    }
+
+
+
+    loadTrack(trackPath) {
+        const wasPlaying = this.isPlaying;
+        this.audio.src = trackPath;
+        this.currentTrack = trackPath;
+        
+        if (wasPlaying) {
+            this.audio.play();
+        }
+        
+        this.nowPlaying.textContent = `Now Playing: ${
+            this.musicSelector.selectedOptions[0].text
+        }`;
+    }
+    
+    updateProgress() {
+        if (!this.isDragging) {
+            const percent = (this.audio.currentTime / this.audio.duration) * 100;
+            this.progressFill.style.width = `${percent}%`;
+            this.currentTimeDisplay.textContent = this.formatTime(this.audio.currentTime);
+        }
+    }
+    
+    startSeek(e) {
+        this.isDragging = true;
+        this.seeking(e);
+    }
+    
+    seeking(e) {
+        if (this.isDragging) {
+            const rect = this.progressBar.getBoundingClientRect();
+            const percent = Math.min(Math.max(0, e.clientX - rect.left), rect.width) / rect.width;
+            this.progressFill.style.width = `${percent * 100}%`;
+            this.audio.currentTime = percent * this.audio.duration;
+        }
+    }
+    
+    endSeek() {
+        this.isDragging = false;
+    }
+    
+    setVolume(value) {
+        this.audio.volume = value / 100;
+    }
+    
+    formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    visualize() {
+        requestAnimationFrame(() => this.visualize());
+        
+        this.analyser.getByteFrequencyData(this.dataArray);
+        
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        const barWidth = (this.canvas.width / this.bufferLength) * 2.5;
+        let barHeight;
+        let x = 0;
+        
+        for(let i = 0; i < this.bufferLength; i++) {
+            barHeight = this.dataArray[i] / 2;
+            
+            const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+            gradient.addColorStop(0, '#6366f1');
+            gradient.addColorStop(1, '#818cf8');
+            
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(x, this.canvas.height - barHeight, barWidth, barHeight);
+            
+            x += barWidth + 1;
+        }
+    }
+    
+    prevTrack() {
+        const options = this.musicSelector.options;
+        let currentIndex = this.musicSelector.selectedIndex;
+        currentIndex = (currentIndex - 1 + options.length) % options.length;
+        this.musicSelector.selectedIndex = currentIndex;
+        this.loadTrack(options[currentIndex].value);
+    }
+    
+    nextTrack() {
+        const options = this.musicSelector.options;
+        let currentIndex = this.musicSelector.selectedIndex;
+        currentIndex = (currentIndex + 1) % options.length;
+        this.musicSelector.selectedIndex = currentIndex;
+        this.loadTrack(options[currentIndex].value);
+    }
+    
+    onTrackEnd() {
+        if (!this.audio.loop) {
+            this.nextTrack();
+        }
+    }
+    
+    onTrackLoad() {
+        this.durationDisplay.textContent = this.formatTime(this.audio.duration);
+        this.currentTimeDisplay.textContent = '0:00';
+        this.progressFill.style.width = '0%';
+    }
+}
+
+// Initialize audio controller
+document.addEventListener('DOMContentLoaded', () => {
+    const audioController = new AudioController();
+});
     </script>
 
     <!-- Footer -->
