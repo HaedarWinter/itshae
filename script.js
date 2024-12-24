@@ -134,7 +134,7 @@ function showDownloadNotification() {
     if (!document.querySelector('.download-notification')) {
         const notification = document.createElement('div');
         notification.className = 'download-notification glass';
-        notification.textContent = 'Download dimulai...';
+        notification.textContent = 'Tunggu Bentar Yaa... File CV Sedang Di Download...';
         document.body.appendChild(notification);
         
         // Remove notification after 3 seconds
@@ -242,6 +242,8 @@ const observer = new IntersectionObserver(
 document.querySelectorAll('.fade-in, .progress').forEach(element => {
     observer.observe(element);
 });
+
+
 
 // Navigation Background Change on Scroll
 window.addEventListener('scroll', () => {
@@ -678,6 +680,7 @@ const App = {
         this.elements.testimonials?.forEach((testimonial, i) => {
             testimonial.style.display = i === index ? 'block' : 'none';
         });
+
     }
 };
 
