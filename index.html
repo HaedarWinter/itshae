@@ -279,7 +279,7 @@
                 <ul>
                     <li>Emails: Within 24 hours</li>
                     <li>WhatsApp: Within 2-3 hours</li>
-                    <li>Business hours: 05.00PM - 9.00PM WIB</li>
+                    <li>Business hours: 09:00 - 17:00 WIB</li>
                 </ul>
             </div>
 
@@ -311,7 +311,7 @@
                         allowfullscreen="" 
                         loading="lazy" 
                         referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
+                    </iframe>
                 </div>
             </div>
         </div>
@@ -562,7 +562,7 @@
                 </button>
                 <div class="volume-control">
                     <i class="fas fa-volume-up"></i>
-                    <input type="range" id="volume-slider" min="0" max="100" value="50">
+                    <input type="range" id="volume-slider" min="0" max="200" value="50">
                 </div>
             </div>
     
@@ -570,8 +570,31 @@
             <div class="playlist-area">
                 <select id="music-selector" class="glass-btn">
                     <option value="assets/audio/yung kai - blue (Official Audio).mp3">yung kai - blue</option>
-                    <option value="assets/audio/backsound2.mp3">Jazz Ambient</option>
-                    <option value="assets/audio/backsound3.mp3">Piano Instrumental</option>
+                    <option value="assets/audio/Bernadya - Untungnya, Hidup Harus Tetap Berjalan (Official Video).mp3">Bernadya - Untungnya Hidup Harus Tetap Berjalan</option>
+                    <option value="assets/audio/Charlie Puth - We Don't Talk Anymore (feat. Selena Gomez) [Official Video].mp3">Charlie Puth - We Don't Talk Anymore</option>
+                    <option value="assets/audio/Mr.Kitty - After Dark.mp3">Mr.Kitty - After Dark</option>
+                    <option value="assets/audio/Roddy Ricch - The Box [Official Audio].mp3">Roddy Ricch - The Box</option>
+                    <option value="assets/audio/ROSÉ & Bruno Mars - APT. (Official Music Video).mp3">ROSÉ & Bruno Mars - APT</option>
+                    <option value="assets/audio/Tejano Blue - Cigarettes After Sex.mp3">Tejano Blue - Cigarettes After Sex</option>
+                    <option value="assets/audio/No. 1 Party Anthem.mp3">No 1 Party Anthem</option>
+                    <option value="assets/audio/Nina-Feast｜｜Lirik Lagu (tumbuh lebih baik cari panggilanmu…aku tau kamu hebat).mp3">Nina-Feast</option>
+                    <option value="assets/audio/Nidji - Rahasia Hati (lyrics).mp3">Nidji - Rahasia Hati</option>
+                    <option value="assets/audio/Last Night on Earth.mp3">Last Night on Earth</option>
+                    <option value="assets/audio/Lady Gaga, Bruno Mars - Die With A Smile (Official Music Video).mp3">Lady Gaga, Bruno Mars - Die With A Smile</option>
+                    <option value="assets/audio/Juicy Luicy x Satine Zaneta - Tanpa Tergesa.mp3">Juicy Luicy x Satine Zaneta - Tanpa Tergesa</option>
+                    <option value="assets/audio/Juicy Luicy - Tampar (Official Lyric Video).mp3">Juicy Luicy - Tampar</option>
+                    <option value="assets/audio/James Arthur - Can I Be Him (Lyric Video).mp3">James Arthur - Can I Be Him</option>
+                    <option value="assets/audio/Hindia - Secukupnya (Lyric Video) - OST. Nanti Kita Cerita Tentang Hari Ini.mp3">Hindia - Secukupnya</option>
+                    <option value="assets/audio/Hindia - Rumah ke Rumah (Official Music Video).mp3">Hindia - Rumah ke Rumah</option>
+                    <option value="assets/audio/Cry - Cigarettes After Sex.mp3">Cry - Cigarettes After Sex</option>
+                    <option value="assets/audio/Car's Outside (Sped Up Version).mp3">Car's Outside</option>
+                    <option value="assets/audio/Bernadya - Satu Bulan (Official Music Video).mp3">Bernadya - Satu Bulan</option>
+                    <option value="assets/audio/Avenged Sevenfold - A Little Piece Of Heaven [Official Music Video].mp3">Avenged Sevenfold - A Little Piece Of Heaven</option>
+                    <option value="assets/audio/Cahaya - Feby Putri (Official Lyric Video).mp3">Cahaya - Feby Putri</option>
+                    <option value="assets/audio/Halu - Feby Putri (Official Lyric Video).mp3">Halu - Feby Putri</option>
+                    <option value="assets/audio/Liar Angin - Feby Putri (Official Lyric Video).mp3">Liar Angin - Feby Putri</option>
+                    <option value="assets/audio/Usik - Feby Putri (Official Lyric Video).mp3">Usik - Feby Putri</option>
+                    <option value="assets/audio/Kepada Noor - Panji Sakti ｜ Lirik Lagu.mp3">Kepada Noor - Panji Sakti</option>
                 </select>
             </div>
         </div>
@@ -810,6 +833,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     initializeAudioContext() {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        this.gainNode = this.audioContext.createGain(); // Tambahkan Gain Node
         this.analyser = this.audioContext.createAnalyser();
         this.source = this.audioContext.createMediaElementSource(this.audio);
         this.source.connect(this.analyser);
@@ -818,6 +842,14 @@ document.addEventListener('DOMContentLoaded', () => {
         this.bufferLength = this.analyser.frequencyBinCount;
         this.dataArray = new Uint8Array(this.bufferLength);
         
+        // Sambungkan source ke gain node, lalu ke analyser
+        this.source.connect(this.gainNode);
+        this.gainNode.connect(this.analyser);
+        this.analyser.connect(this.audioContext.destination);
+        this.analyser.fftSize = 256;
+        this.bufferLength = this.analyser.frequencyBinCount;
+        this.dataArray = new Uint8Array(this.bufferLength);
+
         // Start visualization
         this.visualize();
     }
@@ -968,30 +1000,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     visualize() {
-        requestAnimationFrame(() => this.visualize());
+    requestAnimationFrame(() => this.visualize());
+    
+    this.analyser.getByteFrequencyData(this.dataArray);
+    
+    // Set dark background with slight transparency for trail effect
+    this.ctx.fillStyle = '#555555';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    const barWidth = (this.canvas.width / this.bufferLength) * 1.5;
+    let barHeight;
+    let x = 0;
+    
+    for(let i = 0; i < this.bufferLength; i++) {
+        barHeight = this.dataArray[i] / 2;
         
-        this.analyser.getByteFrequencyData(this.dataArray);
+        // Create gradient for each bar
+        const gradient = this.ctx.createLinearGradient(
+            x, 
+            this.canvas.height - barHeight, 
+            x, 
+            this.canvas.height
+        );
         
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // Dark theme colors
+        gradient.addColorStop(0, '#555555');  // Darker top
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.7)');  // Lighter bottom
         
-        const barWidth = (this.canvas.width / this.bufferLength) * 2.5;
-        let barHeight;
-        let x = 0;
+        this.ctx.fillStyle = gradient;
         
-        for(let i = 0; i < this.bufferLength; i++) {
-            barHeight = this.dataArray[i] / 2;
-            
-            const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-            gradient.addColorStop(0, '#6366f1');
-            gradient.addColorStop(1, '#818cf8');
-            
-            this.ctx.fillStyle = gradient;
-            this.ctx.fillRect(x, this.canvas.height - barHeight, barWidth, barHeight);
-            
-            x += barWidth + 1;
-        }
+        // Draw rounded rectangle instead of regular rectangle
+        this.roundedRect(
+            x,
+            this.canvas.height - barHeight,
+            barWidth,
+            barHeight,
+            barWidth / 2  // Radius half of bar width for pill shape
+        );
+        
+        x += barWidth + 1;
     }
+}
+
+// Helper method untuk membuat rounded rectangle
+roundedRect(x, y, width, height, radius) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x + radius, y);
+    this.ctx.lineTo(x + width - radius, y);
+    this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    this.ctx.lineTo(x + width, y + height - radius);
+    this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    this.ctx.lineTo(x + radius, y + height);
+    this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    this.ctx.lineTo(x, y + radius);
+    this.ctx.quadraticCurveTo(x, y, x + radius, y);
+    this.ctx.closePath();
+    this.ctx.fill();
+}
+
+
     
     prevTrack() {
         const options = this.musicSelector.options;
