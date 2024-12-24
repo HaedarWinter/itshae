@@ -243,15 +243,6 @@ document.querySelectorAll('.fade-in, .progress').forEach(element => {
     observer.observe(element);
 });
 
-// Form Submission Handler
-const contactForm = document.getElementById('contactForm');
-contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    // Add your form submission logic here
-    console.log('Form submitted');
-    contactForm.reset();
-});
-
 // Navigation Background Change on Scroll
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('nav');
@@ -321,18 +312,18 @@ function updateButtonState(button, isLoading) {
     }
 }
 
-// Main form submission handler
+// Handler utama untuk form submission
 document.getElementById('contactForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const submitBtn = document.getElementById('submit-btn');
     const form = this;
     
-    // Clear previous messages
+    // Hapus pesan sebelumnya
     document.getElementById('success-message').style.display = 'none';
     document.getElementById('error-message').style.display = 'none';
     
-    // Collect form data
+    // Kumpulkan data form
     const formData = {
         name: document.getElementById('name').value.trim(),
         email: document.getElementById('email').value.trim(),
@@ -340,43 +331,54 @@ document.getElementById('contactForm').addEventListener('submit', async function
         message: document.getElementById('message').value.trim()
     };
     
-    // Validate form
+    // Validasi form
     const validationErrors = validateForm(formData);
     if (validationErrors.length > 0) {
         showAlert('error', validationErrors.join('\n'));
         return;
     }
+
+    function createTemplateParams(formData, toName, toEmail) {
+        return {
+            from_name: formData.name,
+            from_email: formData.email,
+            subject: formData.subject,
+            message: formData.message,
+            to_name: toName,
+            to_email: toEmail,
+            reply_to: formData.email
+        };
+    }
     
-    // Prepare EmailJS parameters
-    const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        to_name: 'Website Owner', // Add your name here
-        reply_to: formData.email
-    };
+    // Gunakan fungsi utilitas untuk membuat parameter
+    const ownerTemplateParams = createTemplateParams(formData, 'Muhamad Ropi Haedar', 'owner@example.com');
+    const autoReplyTemplateParams = createTemplateParams(formData, formData.name, formData.email);
     
-    // Update button to loading state
+    // Update status tombol jadi loading
     updateButtonState(submitBtn, true);
     
     try {
-        // Send notification to website owner
-        await emailjs.send('service_opuy3c6', 'template_xrrt72a', templateParams);
+        // Kirim notifikasi ke pemilik website
+        await emailjs.send(
+            'service_opuy3c6', 
+            'template_j229t4h',  // Template untuk notifikasi pemilik
+            ownerTemplateParams
+        );
         
-        // Send auto-reply to sender
-        await emailjs.send('service_opuy3c6', 'template_moc834p', {
-            ...templateParams,
-            to_email: formData.email
-        });
+        // Kirim auto-reply ke pengirim menggunakan template yang sudah ada
+        await emailjs.send(
+            'service_opuy3c6',
+            'template_ku9aopp',  // Template untuk auto-reply
+            autoReplyTemplateParams
+        );
         
-        // Show success message
-        showAlert('success', 'Thank you for your message! I will get back to you soon.');
+        // Tampilkan pesan sukses
+        showAlert('success', 'Makasih atas pesan yang kamu kirimkan. Kami bakalan segera respon InsyaAllah.');
         
         // Reset form
         form.reset();
         
-        // Track successful submission (if analytics is set up)
+        // Track submission berhasil (jika analytics sudah diset)
         if (typeof gtag !== 'undefined') {
             gtag('event', 'form_submission', {
                 'event_category': 'Contact',
@@ -385,9 +387,9 @@ document.getElementById('contactForm').addEventListener('submit', async function
         }
     } catch (error) {
         console.error('EmailJS Error:', error);
-        showAlert('error', 'Failed to send message. Please try again later or contact me directly via email.');
+        showAlert('error', 'Gagal mengirim pesan. Mohon coba lagi nanti atau hubungi saya via email.');
         
-        // Track error (if analytics is set up)
+        // Track error (jika analytics sudah diset)
         if (typeof gtag !== 'undefined') {
             gtag('event', 'form_submission_error', {
                 'event_category': 'Contact',
@@ -395,8 +397,69 @@ document.getElementById('contactForm').addEventListener('submit', async function
             });
         }
     } finally {
-        // Reset button state
+        // Reset status tombol
         updateButtonState(submitBtn, false);
+    }
+});
+
+// form submission handler linkedin and whatsapp
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Get form values
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value;
+    const contactMethod = document.getElementById('contact-method').value;
+
+    // Success and error message elements
+    const successMessage = document.getElementById('success-message');
+    const errorMessage = document.getElementById('error-message');
+
+    // Function to show messages
+    const showMessage = (element, duration = 3000) => {
+        element.style.display = 'block';
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, duration);
+    };
+
+    // Handle different contact methods
+    switch(contactMethod) {
+        case 'whatsapp':
+            // Format message for WhatsApp
+            const whatsappMessage = `*New Contact Form Submission*%0a
+Name: ${name}%0a
+Email: ${email}%0a
+Subject: ${subject}%0a
+Message: ${message}`;
+            
+            // Replace YOUR_PHONE_NUMBER with your actual WhatsApp business number
+            const whatsappUrl = `https://wa.me/6285171699066?text=${whatsappMessage}`;
+            
+            // Open WhatsApp in new tab
+            window.open(whatsappUrl, '_blank');
+            showMessage(successMessage);
+            e.target.reset(); // Reset form
+            break;
+
+        case 'linkedin':
+            // Format message for LinkedIn
+            const linkedinMessage = encodeURIComponent(`Hello, I am ${name}. ${message}`);
+            
+            // Replace YOUR_LINKEDIN_PROFILE_ID with your actual LinkedIn profile ID
+            const linkedinUrl = `https://www.linkedin.com/messaging/compose/?to=its-haedar-winter&body=${linkedinMessage}`;
+            
+            // Open LinkedIn messaging in new tab
+            window.open(linkedinUrl, '_blank');
+            showMessage(successMessage);
+            e.target.reset(); // Reset form
+            break;
+
+        default:
+            // For email or any other case, let your existing EmailJS code handle it
+            return true;
     }
 });
 
@@ -452,69 +515,38 @@ formStyles.textContent = `
     }
 `;
 document.head.appendChild(formStyles);
-// Theme Toggle Functionality
+
+// Theme handling
 const themeSwitch = document.getElementById('theme-switch');
-const body = document.body;
 
-themeSwitch.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-    const icon = themeSwitch.querySelector('i');
-    const text = themeSwitch.querySelector('span');
-    
-    if (body.classList.contains('dark-mode')) {
-        icon.classList.replace('fa-moon', 'fa-sun');
-        text.textContent = 'Light Mode';
-    } else {
-        icon.classList.replace('fa-sun', 'fa-moon');
-        text.textContent = 'Dark Mode';
-    }
-});
-
-// Fungsi Pilih Bahasa
-const languageSwitch = document.getElementById('language-switch');
-const translations = {
-    en: {
-        // Nambahin English translations
-    },
-    id: {
-        // Nambahin Indonesian translations
-    }
+// Get preferred theme
+const getPreferredTheme = () => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 };
 
-languageSwitch.addEventListener('change', (e) => {
-    const language = e.target.value;
-    updateLanguage(language);
+// Apply theme
+const applyTheme = (theme) => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+};
+
+// Initialize theme
+applyTheme(getPreferredTheme());
+
+// Theme toggle handler
+themeSwitch.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+});
+// System theme change detection
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+        applyTheme(e.matches ? 'dark' : 'light');
+    }
 });
 
-function updateLanguage(language) {
-    const elements = document.querySelectorAll('[data-translate]');
-    elements.forEach(element => {
-        const key = element.getAttribute('data-translate');
-        element.textContent = translations[language][key];
-    });
-}
-
-// Loading Animasi
-window.addEventListener('load', () => {
-    const loadingScreen = document.getElementById('loading-screen');
-    setTimeout(() => {
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 500);
-    }, 1500);
-});
-
-// Blog Card Hover Animation
-const blogCards = document.querySelectorAll('.blog-card');
-blogCards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-10px)';
-    });
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0)';
-    });
-});
 
 // Testimonial Slider
 let currentTestimonial = 0;
@@ -601,22 +633,6 @@ const App = {
         body: document.body
     },
 
-    // Translations object
-    translations: {
-        en: {
-            darkMode: 'Dark Mode',
-            lightMode: 'Light Mode',
-            loading: 'Loading...'
-            // Add more English translations as needed
-        },
-        id: {
-            darkMode: 'Mode Gelap',
-            lightMode: 'Mode Terang',
-            loading: 'Tunggu Bentar Yaa...'
-            // Add more Indonesian translations as needed
-        }
-    },
-
     // Initialize the application
     init() {
         this.cacheElements();
@@ -629,65 +645,11 @@ const App = {
     // Cache all DOM elements
     cacheElements() {
         this.elements.themeSwitch = document.getElementById('theme-switch');
-        this.elements.languageSwitch = document.getElementById('language-switch');
         this.elements.loadingScreen = document.getElementById('loading-screen');
         this.elements.blogCards = document.querySelectorAll('.blog-card');
         this.elements.testimonials = document.querySelectorAll('.testimonial-card');
     },
-
-    // Bind all event listeners
-    bindEvents() {
-        // Theme switching
-        this.elements.themeSwitch?.addEventListener('click', () => this.toggleTheme());
-
-        // Language switching
-        this.elements.languageSwitch?.addEventListener('change', (e) => this.updateLanguage(e.target.value));
-    },
-
-    // Theme toggling functionality
-    toggleTheme() {
-        this.state.isDarkMode = !this.state.isDarkMode;
-        this.elements.body.classList.toggle('dark-mode');
-
-        const icon = this.elements.themeSwitch.querySelector('i');
-        const text = this.elements.themeSwitch.querySelector('span');
-
-        if (this.state.isDarkMode) {
-            icon?.classList.replace('fa-moon', 'fa-sun');
-            text.textContent = this.translations[this.state.currentLanguage].lightMode;
-        } else {
-            icon?.classList.replace('fa-sun', 'fa-moon');
-            text.textContent = this.translations[this.state.currentLanguage].darkMode;
-        }
-    },
-
-    // Language switching functionality
-    updateLanguage(language) {
-        this.state.currentLanguage = language;
-        const elements = document.querySelectorAll('[data-translate]');
-        
-        elements.forEach(element => {
-            const key = element.getAttribute('data-translate');
-            if (this.translations[language][key]) {
-                element.textContent = this.translations[language][key];
-            }
-        });
-    },
-
-    // Loading screen functionality
-    initializeLoading() {
-        window.addEventListener('DOMContentLoaded', () => {
-            if (this.elements.loadingScreen) {
-                setTimeout(() => {
-                    this.elements.loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        this.elements.loadingScreen.style.display = 'none';
-                    }, 500);
-                }, 1000);
-            }
-        });
-    },
-
+    
     // Blog cards animation
     initializeBlogCards() {
         this.elements.blogCards?.forEach(card => {
@@ -721,3 +683,6 @@ const App = {
 
 // Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => App.init());
+
+
+//theme
